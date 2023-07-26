@@ -18,7 +18,7 @@ The analyzer mode of the CBI Framework is designed to assist in teaching and res
 
 ## How to Use the CBI Framework
 
-1. **Clone the Repository:** Clone the CBI Framework repository from [GitHub Repository Link](insert_link).
+1. **Clone the Repository:** Clone the CBI Framework repository from [GitHub Repository Link]([insert_link](https://github.com/rshalala/CBI_Framework.git)).
 2. **Install Dependencies:** Ensure you have Python and the required libraries installed. You can set up a virtual environment to isolate dependencies for this project. Run the following code to install all necessary dependencies for the CBI Framework application:
     ```bash
     pip install -r requirements.txt
