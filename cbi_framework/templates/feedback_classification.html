@@ -1,0 +1,226 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class="container fs-4">
+        <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <div class="row mb-2 mt-2">
+            <h1 class="border-bottom mb-2 mt-2">Feedback</h1>
+            <h4 class="text-justify mb-2 mt-2">Instructions</h4>
+            <p class="text-justify" font size="+1">Welcome to the feedback page! The feedback is generated based on automated analysis
+                of your invented method. <b>The feedback system's goal is to help you identify core concepts of the
+                domain</b>. Please consider helping us improve the system by providing your own feedback to the
+                feedback system.</p>
+        </div>
+        <div class="container-fluid" font size="+1">
+            {% if fb_type == '1' %}
+                <!-- Explicit feedback case -->
+                {% if features.accuracy == True or features.fp_vs_fn == True or features.normalization == True %}
+                    <div class="alert alert-success mb-2 mt-2">
+                        <p>Well done! Your measure identifies the effect of the following features on the classification quality:</p>
+                        <ul class="list-group">
+                            {% if features.accuracy %}
+                                <li class="list-group-item">Increasing the accuracy score while maintaining the same rate of correctly classified at-risk people should lead to a higher accuracy score</li>
+                            {% endif %}
+                            {% if features.fp_vs_fn %}
+                                <li class="list-group-item">The type of error that a classifier makes matters. A good classification measure should prioritize critical mistakes. In the Meditest case, identifying at-risk people is more important than incorrectly classifying someone who is not at risk as at-risk.</li>
+                            {% endif %}
+                            {% if features.normalization %}
+                                <li class="list-group-item">A good classification measure should be normalized - it should not be affected by the sample size</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if features.accuracy == False or features.fp_vs_fn == False or features.normalization == False %}
+                    <div class="alert alert-danger mb-4 mt-4">
+                        <p>Your measure ignores the effect of the following features on the classification quality::</p>
+                        <ul class="list-group">
+                            {% if not features.accuracy %}
+                                <li class="list-group-item">Increasing the accuracy score while maintaining the same rate of correctly classified at-risk people should lead to a higher accuracy score</li>
+                            {% endif %}
+                            {% if not features.fp_vs_fn %}
+                                <li class="list-group-item">The type of error that a classifier makes matters. A good classification measure should prioritize critical mistakes. In the Meditest case, identifying at-risk people is more important than incorrectly classifying someone who is not at risk as at-risk.</li>
+                            {% endif %}
+                            {% if not features.normalization %}
+                                <li class="list-group-item">A good classification measure should be normalized - it should not be affected by the sample size</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
+            {% elif fb_type == '2' %}
+                <!-- Implicit feedback case -->
+                {% if features.accuracy == True or features.fp_vs_fn == True or features.normalization == True %}
+                    <div class="alert alert-success mb-4 mt-4">
+                        <p>Well done! Your measure identifies the effect of the following features on the classification quality:</p>
+                        <ul class="list-group">
+                            {% if features.accuracy %}
+                                <li class="list-group-item">Increasing the accuracy score while maintaining the same rate of correctly classified at-risk people should lead to a higher accuracy score. For example, considering the following real data: [0, 0, 1]. A classifier with the results [0, 1, 1] should achieve a better score than a classifier with the results [1, 1, 1]</li>
+                            {% endif %}
+                            {% if features.fp_vs_fn %}
+                                <li class="list-group-item">The type of error matters. A good classification measure should prioritize critical mistakes. For example, considering the following real data: [0, 1]. A classifier with the results [1, 1] should achieve a higher score than a classifier with the results [0, 0]</li>
+                            {% endif %}
+                            {% if features.normalization %}
+                                <li class="list-group-item">A good classification measure should be normalized - it should not be affected by the sample size. For example, a case of 2 false positives in sample size of 5 and a case of 4 false positives in sample size of 10, should provide a similar score</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if features.accuracy == False or features.fp_vs_fn == False or features.normalization == False %}
+                    {% if not features.accuracy %}
+                        <div class="alert alert-warning mb-4 mt-4">
+                            <p class="text-justify">Given the real data: [0, 0, 1]. Consider the following cases of classification results:</p>
+                            <ol class="list-group list-group-numbered">
+                                <li class="list-group-item">[1, 1, 1]</li>
+                                <li class="list-group-item">[0, 1, 1]</li>
+                            </ol>
+                            {{ form.feature1_cases.label(class="form-control-label") }}
+                            {% if form.feature1_cases.errors %}
+                                {{ form.feature1_cases(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.feature1_cases.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+                                    {{ form.feature1_cases(class="btn-group-vertical") }}
+                                </div>
+                            {% endif %}
+                            {{ form.feature1_agree.label(class="form-control-label") }}
+                            {% if form.feature1_agree.errors %}
+                                {{ form.feature1_agree(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.feature1_agree.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+                                    {{ form.feature1_agree(class="btn-group-vertical") }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    {% if not features.fp_vs_fn %}
+                        <div class="alert alert-warning mb-4 mt-4">
+                            <p class="text-justify">Given the real data: [0, 1]. Consider the following cases of classification results:</p>
+                            <ol class="list-group list-group-numbered">
+                                <li class="list-group-item">[1, 1]</li>
+                                <li class="list-group-item">[0, 0]</li>
+                            </ol>
+                            {{ form.feature2_cases.label(class="form-control-label") }}
+                            {% if form.feature2_cases.errors %}
+                                {{ form.feature2_cases(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.feature2_cases.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+                                    {{ form.feature2_cases(class="btn-group-vertical") }}
+                                </div>
+                            {% endif %}
+                            {{ form.feature2_agree.label(class="form-control-label") }}
+                            {% if form.feature2_agree.errors %}
+                                {{ form.feature2_agree(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.feature2_agree.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+                                    {{ form.feature2_agree(class="btn-group-vertical") }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    {% if not features.normalization %}
+                        <div class="alert alert-warning mb-4 mt-4">
+                            <p class="text-justify">Consider the following cases:</p>
+                            <ol class="list-group list-group-numbered">
+                                <li class="list-group-item">Real data: [1, 0, 0]. Classification results: [1, 1, 0]</li>
+                                <li class="list-group-item">Real data: [1, 0, 0, 1, 0, 0]. Classification results: [1, 1, 0, 1, 1, 0]</li>
+                            </ol>
+                            {{ form.feature3_cases.label(class="form-control-label") }}
+                            {% if form.feature3_cases.errors %}
+                                {{ form.feature3_cases(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.feature3_cases.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+                                    {{ form.feature3_cases(class="btn-group-vertical") }}
+                                </div>
+                            {% endif %}
+                            {{ form.feature3_agree.label(class="form-control-label") }}
+                            {% if form.feature3_agree.errors %}
+                                {{ form.feature3_agree(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.feature3_agree.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+                                    {{ form.feature3_agree(class="btn-group-vertical") }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+        <!-- rating system -->
+        <fieldset class="form-group">
+            <h4 class="text-justify mb-2 mt-4">Please rate the feedback system</h4>
+            <div class="form-group">
+                {{ form.rating.label(class="form-label") }}
+                {% if form.rating.errors %}
+                    <div class="form-control is-invalid">
+                        {% for button in form.rating %}
+                            <tr>
+                                <td>{{ button(class="") }}</td>
+                                <td>{{ button.label(class="btn btn-outline-primary")}}</td>
+                            </tr>
+                        {% endfor %}
+                    </div>
+{#                    {{ form.rating(class="form-control is-invalid") }}#}
+                    <div class="invalid-feedback mb-4">
+                        {% for error in form.rating.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="form-group mb-4">
+                        {% for button in form.rating %}
+                            <tr>
+                                <td>{{ button(class="") }}</td>
+                                <td>{{ button.label(class="btn btn-outline-primary")}}</td>
+                            </tr>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.comments.label(class="form-control-label") }}
+                {% if form.comments.errors %}
+                    {{ form.comments(class="form-control is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.comments.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.comments(class="form-control") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group mt-3 mb-3">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+        </form>
+    </div>
+{% endblock content %}

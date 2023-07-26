@@ -1,0 +1,69 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class="container">
+        <div class="row mb-2 mt-2 fs-4" >
+            <h1 class="border-bottom">Submission</h1>
+            <h3>Instructions</h3>
+            <p class="text-justify">Welcome to the Invention activity submission framework.
+                To complete the Invention activity task you will have to:</p>
+            <ol class="list-group list-group-numbered">
+                <li class="list-group-item">Upload your Jupyter notebook file that contains your solution (current page)</li>
+                <li class="list-group-item">Analyze your invented method by answering several questions</li>
+                <li class="list-group-item">Analyze a new method suggested by the system by answering a few questions</li>
+            </ol>
+            <p class="text-justify">Please provide your Technion emails in the fields below,
+                and then select your Jupyter notebook file and press the submit button.
+                If it is a single student submission fill only the Student 1 Email field. If it is a submission of pair of students, please provide both your Technion emails
+            </p>
+        </div>
+        <form method="POST" action="" enctype="multipart/form-data">
+            <!-- empty action string means it will post the information to the same route -->
+            {{ form.hidden_tag() }} <!-- the hidden_tag() method is needed (it's adding a Cross Site Request Forgery
+            (CSRF) token), it is part of the protection from attacks, it uses the secret key we set in app.config -->
+            <fieldset class="form-group fs-4"> <!-- bootstrap -->
+                <div class="form-group">
+                    {{ form.email_1.label(class="form-control-label") }}
+                    {% if form.email_1.errors %}
+                        {{ form.email_1(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.email_1.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.email_1(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.email_2.label(class="form-control-label") }}
+                    {% if form.email_2.errors %}
+                        {{ form.email_2(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.email_2.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.email_2(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.notebook_file.label(class="form-control-label") }}
+                    {% if form.notebook_file.errors %}
+                        {{ form.notebook_file(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.notebook_file.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.notebook_file(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class="form-group mt-3 mb-3">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+    </div>
+{% endblock content %}

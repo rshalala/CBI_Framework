@@ -1,0 +1,226 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class="container">
+        <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <div class="row mb-2 mt-2">
+            <h1 class="border-bottom mb-2 mt-2">Feedback</h1>
+            <h4 class="text-justify mb-2 mt-2">Instructions</h4>
+            <p class="text-justify">Welcome to the feedback page! The feedback is generated based on automated analysis
+                of your invented method. <b>The feedback system's goal is to help you identify core concepts of the
+                domain</b>. Please consider helping us improve the system by providing your own feedback to the
+                feedback system.</p>
+        </div>
+        <div class="container-fluid">
+            {% if fb_type == '1' %}
+                <!-- Explicit feedback case -->
+                {% if features.different_proportion == True or features.different_malformed_prob == True or features.different_sample_size == True %}
+                    <div class="alert alert-success mb-2 mt-2">
+                        <p>Well done! Your measure identifies the effect of the following features on the evidence level for a machine malfunction:</p>
+                        <ul class="list-group">
+                            {% if features.different_proportion %}
+                                <li class="list-group-item">Higher proportion of malformed Bamba units leads to stronger evidence for malfunction</li>
+                            {% endif %}
+                            {% if features.different_malformed_prob %}
+                                <li class="list-group-item">Higher expected probability of machine malfunction (malformed_probability) leads to weaker evidence for malfunction</li>
+                            {% endif %}
+                            {% if features.different_sample_size %}
+                                <li class="list-group-item">A larger Bamba bag leads to stronger evidence for malfunction</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if features.different_proportion == False or features.different_malformed_prob == False or features.different_sample_size == False %}
+                    <div class="alert alert-danger mb-4 mt-4">
+                        <p>Your measure ignores the effect of the following features on the evidence level for a machine malfunction:</p>
+                        <ul class="list-group">
+                            {% if not features.different_proportion %}
+                                <li class="list-group-item">Higher proportion of malformed Bamba units leads to stronger evidence for malfunction</li>
+                            {% endif %}
+                            {% if not features.different_malformed_prob %}
+                                <li class="list-group-item">Higher expected probability of machine malfunction (malformed_probability) leads to weaker evidence for malfunction</li>
+                            {% endif %}
+                            {% if not features.different_sample_size %}
+                                <li class="list-group-item">A larger Bamba bag leads to stronger evidence for malfunction</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
+            {% elif fb_type == '2' %}
+                <!-- Implicit feedback case -->
+                {% if features.different_proportion == True or features.different_malformed_prob == True or features.different_sample_size == True %}
+                    <div class="alert alert-success mb-4 mt-4">
+                        <p>Well done! Your measure identifies the effect of the following features on the evidence level for a machine malfunction:</p>
+                        <ul class="list-group">
+                            {% if features.different_proportion %}
+                                <li class="list-group-item">A Bamba bag with 5 malformed units out of 50 provides a stronger evidence for malfunction than a bamba bag with 4 malformed units out of 50</li>
+                            {% endif %}
+                            {% if features.different_malformed_prob %}
+                                <li class="list-group-item">In a case of two Bamba bags with 5 malformed units out of 50, expected malfunction probability of 20% (malformed_probability) provides a weaker evidence for malfunction than a expected malfunction probability of 5%</li>
+                            {% endif %}
+                            {% if features.different_sample_size %}
+                                <li class="list-group-item">A Large Bamba bag with 20 malformed units out of 200 provides a stronger evidence for malfunction than a small Bamba bag with 5 malformed units out of 50</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if features.different_proportion == False or features.different_malformed_prob == False or features.different_sample_size == False %}
+                    {% if not features.different_proportion %}
+                        <div class="alert alert-warning mb-4 mt-4">
+                            <p class="text-justify">Consider the following cases:</p>
+                            <ol class="list-group list-group-numbered">
+                                <li class="list-group-item">A large Bamba bag (200 units) containing 5 malformed units</li>
+                                <li class="list-group-item">A large Bamba bag (200 units) containing 50 malformed units</li>
+                            </ol>
+                            {{ form.feature1_cases.label(class="form-control-label") }}
+                            {% if form.feature1_cases.errors %}
+                                {{ form.feature1_cases(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.feature1_cases.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+                                    {{ form.feature1_cases(class="btn-group-vertical") }}
+                                </div>
+                            {% endif %}
+                            {{ form.feature1_agree.label(class="form-control-label") }}
+                            {% if form.feature1_agree.errors %}
+                                {{ form.feature1_agree(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.feature1_agree.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+                                    {{ form.feature1_agree(class="btn-group-vertical") }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    {% if not features.different_malformed_prob %}
+                        <div class="alert alert-warning mb-4 mt-4">
+                            <p class="text-justify">Consider the following cases:</p>
+                            <ol class="list-group list-group-numbered">
+                                <li class="list-group-item">A Bamba production machine with a 5% expected probability of malformed unit</li>
+                                <li class="list-group-item">A Bamba production machine with a 50% expected probability of malformed unit</li>
+                            </ol>
+                            {{ form.feature2_cases.label(class="form-control-label") }}
+                            {% if form.feature2_cases.errors %}
+                                {{ form.feature2_cases(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.feature2_cases.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+                                    {{ form.feature2_cases(class="btn-group-vertical") }}
+                                </div>
+                            {% endif %}
+                            {{ form.feature2_agree.label(class="form-control-label") }}
+                            {% if form.feature2_agree.errors %}
+                                {{ form.feature2_agree(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.feature2_agree.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+                                    {{ form.feature2_agree(class="btn-group-vertical") }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    {% if not features.different_sample_size %}
+                        <div class="alert alert-warning mb-4 mt-4">
+                            <p class="text-justify">Consider the following cases:</p>
+                            <ol class="list-group list-group-numbered">
+                                <li class="list-group-item">A very small Bamba bag (10 units) containing 1 malformed unit</li>
+                                <li class="list-group-item">A large Bamba bag (200 units) containing 20 malformed units</li>
+                            </ol>
+                            {{ form.feature3_cases.label(class="form-control-label") }}
+                            {% if form.feature3_cases.errors %}
+                                {{ form.feature3_cases(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.feature3_cases.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+                                    {{ form.feature3_cases(class="btn-group-vertical") }}
+                                </div>
+                            {% endif %}
+                            {{ form.feature3_agree.label(class="form-control-label") }}
+                            {% if form.feature3_agree.errors %}
+                                {{ form.feature3_agree(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.feature3_agree.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+                                    {{ form.feature3_agree(class="btn-group-vertical") }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+        <!-- rating system -->
+        <fieldset class="form-group">
+            <h4 class="text-justify mb-2 mt-4">Please rate the feedback system</h4>
+            <div class="form-group">
+                {{ form.rating.label(class="form-label") }}
+                {% if form.rating.errors %}
+                    <div class="form-control is-invalid">
+                        {% for button in form.rating %}
+                            <tr>
+                                <td>{{ button(class="") }}</td>
+                                <td>{{ button.label(class="btn btn-outline-primary")}}</td>
+                            </tr>
+                        {% endfor %}
+                    </div>
+{#                    {{ form.rating(class="form-control is-invalid") }}#}
+                    <div class="invalid-feedback mb-4">
+                        {% for error in form.rating.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="form-group mb-4">
+                        {% for button in form.rating %}
+                            <tr>
+                                <td>{{ button(class="") }}</td>
+                                <td>{{ button.label(class="btn btn-outline-primary")}}</td>
+                            </tr>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.comments.label(class="form-control-label") }}
+                {% if form.comments.errors %}
+                    {{ form.comments(class="form-control is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.comments.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.comments(class="form-control") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group mt-3 mb-3">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+        </form>
+    </div>
+{% endblock content %}

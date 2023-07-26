@@ -1,0 +1,184 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class="container">
+        <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <div class="row mb-2 mt-2">
+            <h1 class="border-bottom mb-2 mt-2">Feedback</h1>
+            <h4 class="text-justify mb-2 mt-2">Instructions</h4>
+            <p class="text-justify">Welcome to the feedback page! The feedback is generated based on automated analysis
+                of your invented method. <b>The feedback system's goal is to help you identify core concepts of the
+                domain, and invent better measures</b>. Please consider helping us improve the system by providing your own feedback to the
+                feedback system.
+            </p>
+        </div>
+        <div class="container-fluid">
+            {% if fb_type == '1' %}
+                <!-- Explicit feedback case -->
+                {% if features.proportion == True or features.distance == True %}
+                    <div class="alert alert-success mb-2 mt-2">
+                        <p>Well done! Your measure successfully identifies the effect of the following features on the calculation of distance between packs of toys:</p>
+                        <ul class="list-group">
+                            {% if features.proportion %}
+                                <li class="list-group-item">The distance between packs of toys with identical distribution (same proportion of land, air, and water animals) should be 0, even though they are different in size.</li>
+                            {% endif %}
+                            {% if features.distance %}
+                                <li class="list-group-item">Distance should not be negative, and distance between packs of toys should consider all items.</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if features.proportion == False or features.distance == False %}
+                    <div class="alert alert-danger mb-4 mt-4">
+                        <p>Your measure ignores the effect of the following features on the calculation of distance between toys packs':</p>
+                        <ul class="list-group">
+                            {% if not features.proportion %}
+                                <li class="list-group-item">The distance between packs of toys with identical distribution (same proportion of land, air, and water animals) should be 0, even though they are different in size.</li>
+                            {% endif %}
+                            {% if not features.distance %}
+                                <li class="list-group-item">Distance should not be negative, and distance between packs of toys should consider all items.</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
+            {% elif fb_type == '2' %}
+                <!-- Implicit feedback case -->
+                {% if features.proportion == True or features.distance == True %}
+                    <div class="alert alert-success mb-4 mt-4">
+                        <p>Well done! Your measure successfully identifies the effect of the following features on the calculation of distance between toys' packs:</p>
+                        <ul class="list-group">
+                            {% if features.proportion %}
+                                <li class="list-group-item">The distance between a pair of packs of toys with identical distribution is 0. For example: [10, 10, 10] - [50, 50, 50] = 0.</li>
+                            {% endif %}
+                            {% if features.distance %}
+                                <li class="list-group-item">Distance should not be negative, and distance between packs of toys should consider all items. For example: [30, 10, 10] - [10, 10, 30] != 0</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if features.proportion == False or features.distance == False %}
+                    {% if not features.proportion %}
+                        <div class="alert alert-warning mb-4 mt-4">
+                            <p class="text-justify">Analyze the following cases, it should help you improve your invented measure:</p>
+                            {{ form.feature1_cases.label(class="form-control-label") }}
+                            <ol class="list-group list-group-numbered">
+                                <li class="list-group-item">The distance between the packs [10, 10, 10] and [20, 20, 20]</li>
+                                <li class="list-group-item">The distance between the packs [10, 10, 10] and [50, 50, 50]</li>
+                            </ol>
+                            {% if form.feature1_cases.errors %}
+                                {{ form.feature1_cases(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.feature1_cases.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+                                    {{ form.feature1_cases(class="btn-group-vertical") }}
+                                </div>
+                            {% endif %}
+                            {{ form.feature1_agree.label(class="form-control-label") }}
+                            {% if form.feature1_agree.errors %}
+                                {{ form.feature1_agree(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.feature1_agree.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+                                    {{ form.feature1_agree(class="btn-group-vertical") }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    {% if not features.distance %}
+                        <div class="alert alert-warning mb-4 mt-4">
+                            <p class="text-justify">Analyze the following cases, it should help you improve your invented measure:</p>
+                            {{ form.feature2_cases.label(class="form-control-label") }}
+                            <ol class="list-group list-group-numbered">
+                                <li class="list-group-item">The distance between the packs [30, 20, 20, 20, 10] and [30, 25, 20, 15, 10]</li>
+                                <li class="list-group-item">The distance between the packs [30, 20, 20, 20, 10] and [30, 22, 20, 18, 10]</li>
+                            </ol>
+                            {% if form.feature2_cases.errors %}
+                                {{ form.feature2_cases(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.feature2_cases.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+                                    {{ form.feature2_cases(class="btn-group-vertical") }}
+                                </div>
+                            {% endif %}
+                            {{ form.feature2_agree.label(class="form-control-label") }}
+                            {% if form.feature2_agree.errors %}
+                                {{ form.feature2_agree(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.feature2_agree.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+                                    {{ form.feature2_agree(class="btn-group-vertical") }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <!-- rating system -->
+        <fieldset class="form-group">
+            <h4 class="text-justify mb-2 mt-4">Please rate the feedback system</h4>
+            <div class="form-group">
+                {{ form.rating.label(class="form-label") }}
+                {% if form.rating.errors %}
+                    <div class="form-control is-invalid">
+                        {% for button in form.rating %}
+                            <tr>
+                                <td>{{ button(class="") }}</td>
+                                <td>{{ button.label(class="btn btn-outline-primary")}}</td>
+                            </tr>
+                        {% endfor %}
+                    </div>
+{#                    {{ form.rating(class="form-control is-invalid") }}#}
+                    <div class="invalid-feedback mb-4">
+                        {% for error in form.rating.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="form-group mb-4">
+                        {% for button in form.rating %}
+                            <tr>
+                                <td>{{ button(class="") }}</td>
+                                <td>{{ button.label(class="btn btn-outline-primary")}}</td>
+                            </tr>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.comments.label(class="form-control-label") }}
+                {% if form.comments.errors %}
+                    {{ form.comments(class="form-control is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.comments.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.comments(class="form-control") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group mt-3 mb-3">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+        </form>
+    </div>
+{% endblock content %}
